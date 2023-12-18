@@ -46,4 +46,10 @@ public class NoteController {
         this.noteModel.saveNote(note);
         return "redirect:/notes/show/" + note.getId();
     }
+
+    @DeleteMapping("/{noteUUID}")
+    public String deleteNote(@PathVariable UUID noteUUID) {
+        this.noteModel.deleteNote(noteUUID);
+        return "redirect:/";
+    }
 }

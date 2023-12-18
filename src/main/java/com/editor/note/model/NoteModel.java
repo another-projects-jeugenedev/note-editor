@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class NoteModel {
@@ -21,5 +22,9 @@ public class NoteModel {
 
     public Note saveNote(Note note) {
         return this.noteRepository.save(note);
+    }
+
+    public void deleteNote(UUID noteUUID) {
+        this.noteRepository.deleteById(noteUUID);
     }
 }

@@ -25,6 +25,18 @@
 </main>
 
 <script>
+    document.body.querySelectorAll(".note")
+        .forEach(note => note.addEventListener("contextmenu", e => {
+            e.preventDefault();
+            deleteNote(note);
+        }));
+
+    async function deleteNote(note) {
+        const noteUUID = note.querySelector("input").value;
+        await fetch(`/notes/${noteUUID}`, {method: "DELETE"});
+        location.reload();
+    }
+
     function clickNote(el) {
         let noteUUID = el.querySelector("input").value;
         if (!noteUUID) {
