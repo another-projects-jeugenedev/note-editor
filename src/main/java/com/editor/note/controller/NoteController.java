@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Controller
 @RequestMapping("/notes")
 public class NoteController {
@@ -38,8 +40,9 @@ public class NoteController {
         return "redirect:/notes/show/" + note.getId();
     }
 
-    @PutMapping("/{note}")
-    public String editNote(@PathVariable Note note) {
+    @PutMapping("/{noteUUID}")
+    public String editNote(@PathVariable UUID noteUUID, @ModelAttribute Note note) {
+        note.setId(noteUUID);
         this.noteModel.saveNote(note);
         return "redirect:/notes/show/" + note.getId();
     }

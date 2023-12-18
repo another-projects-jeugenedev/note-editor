@@ -8,15 +8,19 @@
 </head>
 <body>
 <main>
+    <input id="noteuuid" type="hidden" th:value="${note.getId()}">
     <div id="header" class="header no-edit">
         <span th:text="${note.getHeader()}"></span>
     </div>
     <div id="content" class="content-container no-edit">
-        <span th:text="${note.getContent()}"></span>
+        <th:block th:each="line : ${note.getContent().split('\n')}">
+            <span th:text="${line}"></span>
+        </th:block>
     </div>
 </main>
 
 <script>
+    const noteUUID = document.body.querySelector("#noteuuid").value;
     const header = document.body.querySelector("#header");
     const content = document.body.querySelector("#content");
 
@@ -25,8 +29,9 @@
 
     header.addEventListener("click", () => {
         if (!headerChangeActive) {
+            const text = header.querySelector("span").innerText;
             clearNode(header);
-            embedEdit(header, {isHeader: true, isContent: false});
+            embedEdit(header, text, {isHeader: true, isContent: false});
             header.classList.toggle("no-edit");
             headerChangeActive = true;
         }
@@ -34,28 +39,68 @@
 
     content.addEventListener("click", () => {
         if (!contentChangeActive) {
+            const text = content.innerText;
             clearNode(content);
-            embedEdit(content, {isContent: true, isHeader: false});
+            embedEdit(content, text, {isContent: true, isHeader: false});
             content.classList.toggle("no-edit");
             contentChangeActive = true;
         }
     });
 
-    function clearNode(el) {
-        for (let i = 0; i < el.children.length; i++) {
-            el.children.item(i).remove();
-        }
+    function eventAriaBlurHeader(aria) {
+        const span = document.createElement("span");
+        span.innerText = aria.value;
+        aria.remove();
+        header.classList.toggle("no-edit");
+        header.appendChild(span);
+        headerChangeActive = false;
+        saveNote();
     }
 
-    function embedEdit(node, {isHeader, isContent}) {
+    function eventAriaBlurContent(aria) {
+        const span = document.createElement("span");
+        span.innerText = aria.value;
+        clearNode(content);
+        content.classList.toggle("no-edit");
+        content.style.overflowY = "scroll";
+        content.appendChild(span);
+        contentChangeActive = false;
+        saveNote();
+    }
+
+    function saveNote() {
+        fetch(`/notes/${noteUUID}`,
+            {
+                method: "PUT",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: `header=${encodeURI(header.innerText)}&content=${encodeURI(content.innerText)}`
+            }
+        );
+    }
+
+    function clearNode(el) {
+        el.innerHTML = "";
+    }
+
+    function embedEdit(node, value, {isHeader, isContent}) {
         const aria = document.createElement("textarea");
         aria.className = "edit";
         if (isHeader) {
-            aria.classList.toggle("header");
+            aria.style.font = "inherit";
+            aria.addEventListener("blur", () => eventAriaBlurHeader(aria));
+        } else if (isContent) {
+            aria.style.fontSize = "2.5vw";
+            node.style.overflowY = "hidden";
+            aria.addEventListener("blur", () => eventAriaBlurContent(aria));
         }
-        if (isContent) {
-            aria.classList.toggle("content");
-        }
+
+        aria.addEventListener("keydown", (e) => {
+            if (isHeader && e.code === 'Enter') {
+                eventAriaBlurHeader(aria);
+            }
+        });
+
+        aria.value = value;
         node.append(aria);
         aria.focus();
     }
