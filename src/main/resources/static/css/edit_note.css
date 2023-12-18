@@ -1,0 +1,37 @@
+main {
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    margin: auto;
+}
+
+.header {
+    margin: 0 0 2vw 0;
+    font-size: 4vw;
+    font-weight: bold;
+    white-space: nowrap;
+    border: .2vw solid white;
+}
+
+.content-container {
+    height: 80svh;
+    border: .2vw solid white;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+#content {
+    font-size: 2.5vw;
+}
+
+.no-edit:hover {
+    border-color: black;
+}
+
+.edit, .edit:focus {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+}

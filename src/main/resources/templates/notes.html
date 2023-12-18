@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Notes</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/notes.css">
+</head>
+<body>
+<main>
+    <div th:class="note" th:each="note : ${notes}" onclick="clickNote(this)">
+        <input type="hidden" th:value="${note.getId()}">
+        <div class="note-header">
+            <span th:text="${note.getHeader()}"></span>
+        </div>
+        <span th:text="${note.getContent()}"></span>
+    </div>
+    <div class="note" onclick="clickNote(this)">
+        <input type="hidden">
+        <div class="note-header">
+            <span>Заметка</span>
+        </div>
+        <span>Нажмите, чтобы добавить новую заметку</span>
+    </div>
+</main>
+
+<script>
+    function clickNote(el) {
+        let noteUUID = el.querySelector("input").value;
+        if (!noteUUID) {
+            fetch(
+                '/notes',
+                {method: "post", headers: {"Content-Type": "application/x-www-form-urlencoded"}, body: "header=&content="}
+            ).then(data => location.href = data.url);
+        } else {
+            location.href = `/notes/show/${noteUUID}`;
+        }
+    }
+</script>
+</body>
+</html>

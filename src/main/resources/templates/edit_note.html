@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Note</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/edit_note.css">
+</head>
+<body>
+<main>
+    <div id="header" class="header no-edit">
+        <span th:text="${note.getHeader()}"></span>
+    </div>
+    <div id="content" class="content-container no-edit">
+        <span th:text="${note.getContent()}"></span>
+    </div>
+</main>
+
+<script>
+    const header = document.body.querySelector("#header");
+    const content = document.body.querySelector("#content");
+
+    let headerChangeActive = false;
+    let contentChangeActive = false;
+
+    header.addEventListener("click", () => {
+        if (!headerChangeActive) {
+            clearNode(header);
+            embedEdit(header, {isHeader: true, isContent: false});
+            header.classList.toggle("no-edit");
+            headerChangeActive = true;
+        }
+    });
+
+    content.addEventListener("click", () => {
+        if (!contentChangeActive) {
+            clearNode(content);
+            embedEdit(content, {isContent: true, isHeader: false});
+            content.classList.toggle("no-edit");
+            contentChangeActive = true;
+        }
+    });
+
+    function clearNode(el) {
+        for (let i = 0; i < el.children.length; i++) {
+            el.children.item(i).remove();
+        }
+    }
+
+    function embedEdit(node, {isHeader, isContent}) {
+        const aria = document.createElement("textarea");
+        aria.className = "edit";
+        if (isHeader) {
+            aria.classList.toggle("header");
+        }
+        if (isContent) {
+            aria.classList.toggle("content");
+        }
+        node.append(aria);
+        aria.focus();
+    }
+</script>
+</body>
+</html>
