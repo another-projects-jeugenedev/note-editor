@@ -2,7 +2,7 @@ spring:
   datasource:
     username: postgres
     password: postgres
-    url: jdbc:postgresql://localhost:5432/note_editor
+    url: jdbc:postgresql://${DB_HOST}/note_editor
   jpa:
     hibernate:
       ddl-auto: validate
