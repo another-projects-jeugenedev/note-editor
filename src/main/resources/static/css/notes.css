@@ -33,3 +33,14 @@ main {
     font-size: 2vw;
     background: lightgray;
 }
+
+.note-nav-pager {
+    position: fixed;
+    bottom: 1vw;
+    margin: 1vw;
+}
+
+.note-nav-pager button {
+    font-size: 1.7vw;
+    cursor: pointer;
+}

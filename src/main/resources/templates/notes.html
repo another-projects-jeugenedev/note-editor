@@ -22,8 +22,25 @@
         </div>
         <span>Нажмите, чтобы добавить новую заметку</span>
     </div>
+    <div class="note-nav-pager">
+        <button id="btn_left">left</button>
+        <button id="btn_right">right</button>
+    </div>
 </main>
 
+<script>
+    document.body.querySelector("#btn_left").onclick = () => pageMove(false);
+    document.body.querySelector("#btn_right").onclick = () => pageMove(true);
+
+    function pageMove(up) {
+        const page = Number(location.pathname.split("/").pop());
+        if (page <= 1 && !up) {
+            location.replace(`${location.origin}/notes/1`);
+        } else {
+            location.replace(`${location.origin}/notes/${up ? page + 1 : page - 1}`);
+        }
+    }
+</script>
 <script>
     document.body.querySelectorAll(".note")
         .forEach(note => note.addEventListener("contextmenu", e => {
